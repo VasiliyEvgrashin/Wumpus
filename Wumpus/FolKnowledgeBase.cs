@@ -220,5 +220,41 @@
                  Math.Abs(int.Parse(f.Args[1]) - agentPos.y)) > maxDistance
             );
         }
+
+        public double EstimateProbability(Predicate query)
+        {
+            double score = 0.0;
+
+            foreach (var rule in rules)
+            {
+                if (rule.Conclusion.Name != query.Name)
+                    continue;
+
+                if (rule.Conclusion.Args.Count != query.Args.Count)
+                    continue;
+
+                bool match = true;
+                for (int i = 0; i < query.Args.Count; i++)
+                {
+                    if (rule.Conclusion.Args[i] != query.Args[i] &&
+                        !rule.Conclusion.Args[i].StartsWith("x") &&
+                        !rule.Conclusion.Args[i].StartsWith("y"))
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if (!match)
+                    continue;
+
+                bool premisesHold = rule.Premises.All(p => Facts.Any(f => f.ToString() == p.ToString()));
+
+                if (premisesHold)
+                    score += rule.Weight;
+            }
+
+            return 1.0 / (1.0 + Math.Exp(-score));
+        }
     }
 }

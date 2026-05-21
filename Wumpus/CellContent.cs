@@ -5,7 +5,6 @@
         Empty,
         Pit,
         Wumpus,
-        Gold,
         Exit
     }
 }

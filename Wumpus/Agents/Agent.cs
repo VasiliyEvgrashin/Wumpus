@@ -47,10 +47,9 @@
             stepCounter++;
             if (stepCounter % 10 == 0)
             {
-                int maxDist = visionRadius * 2; 
+                int maxDist = visionRadius * 2;
                 kb.CleanupFarCells(Position, maxDist);
             }
-
 
             DrawWorld();
 
@@ -62,7 +61,6 @@
 
             return true;
         }
-
 
         private bool IsNeighbor((int x, int y) a, (int x, int y) b)
             => Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y) == 1;
@@ -224,20 +222,44 @@
         {
             if (HasFact("Pit", cell)) return 1.0;
             if (HasFact("NotPit", cell)) return 0.0;
-            if (HasFact("PossiblePit", cell)) return 0.8;
 
-            bool nearBreeze = GetNeighbors(cell).Any(n => HasFact("Breeze", n));
-            return nearBreeze ? 0.5 : 0.1;
+            var pPit = kb.EstimateProbability(
+                new Predicate("Pit", cell.x.ToString(), cell.y.ToString()));
+
+            var pPossiblePit = kb.EstimateProbability(
+                new Predicate("PossiblePit", cell.x.ToString(), cell.y.ToString()));
+
+            double p = Math.Max(pPit, 0.8 * pPossiblePit);
+
+            if (p == 0.0)
+            {
+                bool nearBreeze = GetNeighbors(cell).Any(n => HasFact("Breeze", n));
+                p = nearBreeze ? 0.5 : 0.1;
+            }
+
+            return Math.Clamp(p, 0.0, 1.0);
         }
 
         private double EstimateWumpusRisk((int x, int y) cell)
         {
             if (HasFact("Wumpus", cell)) return 1.0;
             if (HasFact("NotWumpus", cell)) return 0.0;
-            if (HasFact("PossibleWumpus", cell)) return 0.8;
 
-            bool nearStench = GetNeighbors(cell).Any(n => HasFact("Stench", n));
-            return nearStench ? 0.5 : 0.05;
+            var pW = kb.EstimateProbability(
+                new Predicate("Wumpus", cell.x.ToString(), cell.y.ToString()));
+
+            var pPossibleW = kb.EstimateProbability(
+                new Predicate("PossibleWumpus", cell.x.ToString(), cell.y.ToString()));
+
+            double p = Math.Max(pW, 0.8 * pPossibleW);
+
+            if (p == 0.0)
+            {
+                bool nearStench = GetNeighbors(cell).Any(n => HasFact("Stench", n));
+                p = nearStench ? 0.5 : 0.05;
+            }
+
+            return Math.Clamp(p, 0.0, 1.0);
         }
 
         // ---------------------------------------------------------
