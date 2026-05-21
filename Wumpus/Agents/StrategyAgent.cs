@@ -1,12 +1,11 @@
 ﻿namespace Wumpus.Agents
 {
-    public class StrategyAgent : RiskAgent
+    public abstract class StrategyAgent : RiskAgent
     {
-        public StrategyAgent(World world, FolKnowledgeBase kb, int startX, int startY)
-            : base(world, kb, startX, startY)
+        protected StrategyAgent(World world, FolKnowledgeBase kb, int startX, int startY, int vision = 10)
+            : base(world, kb, startX, startY, vision)
         {
         }
-
 
         protected (int x, int y)? ChooseNextMove()
         {
@@ -106,7 +105,5 @@
 
         private int CountUnknownNeighbors((int x, int y) p)
             => GetNeighbors(p).Count(n => !Visited.Contains(n));
-        private bool IsNeighbor((int x, int y) a, (int x, int y) b)
-            => Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y) == 1;
     }
 }

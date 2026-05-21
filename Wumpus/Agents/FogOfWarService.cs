@@ -1,29 +1,37 @@
 ﻿namespace Wumpus.Agents
 {
-    public class FogAgent : VisualizationAgent
+    public class FogOfWarService
     {
-        
-        public FogAgent(World world, FolKnowledgeBase kb, int startX, int startY)
-            : base(world, kb, startX, startY)
+        private readonly World world;
+        private readonly FolKnowledgeBase kb;
+        private readonly int visionRadius;
+
+        public FogOfWarService(World world, FolKnowledgeBase kb, int visionRadius)
         {
-            UpdateAdjacency();
+            this.world = world;
+            this.kb = kb;
+            this.visionRadius = visionRadius;
         }
 
-        protected void UpdateAdjacency()
+        public void UpdateAdjacency((int x, int y) center)
         {
             kb.RemoveFactsByName("Adjacent");
-            var (cx, cy) = Position;
+            var (cx, cy) = center;
+
             for (int x = cx - visionRadius; x <= cx + visionRadius; x++)
             {
                 for (int y = cy - visionRadius; y <= cy + visionRadius; y++)
                 {
-                    if (!IsInside(x, y))
+                    if (x < 0 || x >= world.Size || y < 0 || y >= world.Size)
                         continue;
+
                     foreach (var (nx, ny) in world.Adjacent(x, y))
                     {
-                        if (!IsInside(nx, ny))
+                        if (nx < 0 || nx >= world.Size || ny < 0 || ny >= world.Size)
                             continue;
-                        if (InVision(cx, cy, x, y) && InVision(cx, cy, nx, ny))
+
+                        if (Math.Abs(cx - x) + Math.Abs(cy - y) <= visionRadius &&
+                            Math.Abs(cx - nx) + Math.Abs(cy - ny) <= visionRadius)
                         {
                             kb.TellFact(new Predicate(
                                 "Adjacent",
@@ -33,15 +41,6 @@
                     }
                 }
             }
-        }
-
-        protected bool IsInside(int x, int y)
-            => x >= 0 && x < world.Size && y >= 0 && y < world.Size;
-
-        protected virtual void MoveTo((int x, int y) next)
-        {
-            Position = next;
-            UpdateAdjacency();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿namespace Wumpus.Agents
 {
-    public class RiskAgent : FogAgent
+    public abstract class RiskAgent : PerceptionAgent
     {
-        public RiskAgent(World world, FolKnowledgeBase kb, int startX, int startY)
-            : base(world, kb, startX, startY)
+        protected RiskAgent(World world, FolKnowledgeBase kb, int startX, int startY, int vision = 10)
+            : base(world, kb, startX, startY, vision)
         {
         }
 

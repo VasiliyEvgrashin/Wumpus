@@ -2,20 +2,21 @@
 {
     public class Agent : StrategyAgent
     {
-        
+        private readonly FogOfWarService fog;
+        private readonly VisualizationService viz;
+
         private int stepCounter = 0;
 
-        public Agent(World world, FolKnowledgeBase kb, int startX, int startY)
-            : base(world, kb, startX, startY)
+        public Agent(World world, FolKnowledgeBase kb, int startX, int startY, int vision = 10)
+            : base(world, kb, startX, startY, vision)
         {
-            Visited.Add(Position);
-            TellVisited(Position);
+            fog = new FogOfWarService(world, kb, vision);
+            viz = new VisualizationService(world, kb, vision);
+
+            fog.UpdateAdjacency(Position);
+            kb.Infer();
         }
 
-
-        // ---------------------------------------------------------
-        // ONE STEP
-        // ---------------------------------------------------------
         public bool Step()
         {
             var next = ChooseNextMove();
@@ -37,7 +38,7 @@
                 kb.CleanupFarCells(Position, maxDist);
             }
 
-            DrawWorld();
+            viz.DrawWorld(Position);
 
             if (world.Map[next.Value.x, next.Value.y] == CellContent.Exit)
             {
@@ -52,16 +53,10 @@
         {
             base.MoveTo(next);
 
-            Visited.Add(next);
-            TellVisited(next);
-
             if (HasFact("Safe", next))
                 kb.RemoveAllFactsExceptSafeAndVisited(next.x, next.y);
-        }
 
-        private void TellVisited((int x, int y) pos)
-        {
-            kb.TellFact(new Predicate("Visited", pos.x.ToString(), pos.y.ToString()));
+            fog.UpdateAdjacency(next);
         }
     }
 }

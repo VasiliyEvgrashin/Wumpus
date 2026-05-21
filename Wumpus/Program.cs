@@ -7,8 +7,6 @@ var world = worldGenerator.Generate(size, 10, 10);
 var kb = new FolKnowledgeBase();
 Helper.FillRules(kb);
 var agent = new Agent(world, kb, 0, 0);
-agent.Perceive();
-kb.Infer();
 
 int len = size * size;
 for (int step = 1; step <= len; step++)
