@@ -1,8 +1,8 @@
 ﻿namespace Wumpus.Agents
 {
-    public class AgentConsoleDrow : BaseAgent
+    public class VisualizationAgent : PerceptionAgent
     {
-        protected AgentConsoleDrow(World world, FolKnowledgeBase kb, int startX, int startY)
+        protected VisualizationAgent(World world, FolKnowledgeBase kb, int startX, int startY)
             : base(world, kb, startX, startY)
         {
         }
@@ -10,9 +10,7 @@
         public void DrawWorld()
         {
             Console.Clear();
-
             var (ax, ay) = Position;
-
             for (int y = 0; y < world.Size; y++)
             {
                 for (int x = 0; x < world.Size; x++)
@@ -24,7 +22,6 @@
                         Console.ResetColor();
                         continue;
                     }
-
                     if (ax == x && ay == y)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -32,11 +29,9 @@
                         Console.ResetColor();
                         continue;
                     }
-
                     bool breeze = world.HasBreeze(x, y);
                     bool stench = world.HasStench(x, y);
                     bool light = world.HasLight(x, y);
-
                     if (breeze && stench && light)
                     {
                         Console.ForegroundColor = ConsoleColor.Magenta;
@@ -66,7 +61,6 @@
                         Console.ResetColor();
                         continue;
                     }
-
                     switch (world.Map[x, y])
                     {
                         case CellContent.Empty:
@@ -96,7 +90,6 @@
                             break;
                     }
                 }
-
                 Console.WriteLine();
             }
         }
