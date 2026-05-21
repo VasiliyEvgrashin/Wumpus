@@ -54,10 +54,6 @@
         protected bool IsInside(int x, int y)
             => x >= 0 && x < world.Size && y >= 0 && y < world.Size;
 
-        /// <summary>
-        /// Базовое перемещение: только смена позиции и фиксация посещения.
-        /// Вся дополнительная логика — в override.
-        /// </summary>
         protected virtual void MoveTo((int x, int y) next)
         {
             Position = next;

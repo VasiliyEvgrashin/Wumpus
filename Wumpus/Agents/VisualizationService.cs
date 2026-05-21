@@ -38,8 +38,6 @@
                         continue;
                     }
 
-                    // Здесь можно использовать либо реальные данные мира,
-                    // либо знания агента (HasFact) — в зависимости от цели.
                     bool breeze = world.HasBreeze(x, y);
                     bool stench = world.HasStench(x, y);
                     bool light = world.HasLight(x, y);
