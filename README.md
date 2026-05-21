@@ -1,4 +1,5 @@
 Wumpus World Agent
+
 <img width="547" height="597" alt="image" src="https://github.com/user-attachments/assets/53be42b8-6d3a-4c3e-a7f0-c000625f0f8c" />
 
 A logical agent for the classic Wumpus World. The agent explores an unknown grid, analyzes sensor data, updates its internal knowledge base, and makes decisions using logical inference. The project includes a full world simulation, a reasoning engine, and console visualization.
